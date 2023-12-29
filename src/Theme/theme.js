@@ -21,6 +21,9 @@ import IRANSansXBoldWoff2 from "/public/fonts/woff2/IRANSansX-bold.woff2";
 
 export const theme = createTheme({
     direction: "rtl",
+    palette: {
+        mode: "dark"
+    },
     typography: {
         fontFamily: 'IRANSansX'
     },

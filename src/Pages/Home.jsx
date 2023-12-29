@@ -1,10 +1,14 @@
-import Typography from "@mui/material/Typography";
+import { Helmet } from "react-helmet";
+import { Header } from "../Components";
 
 const Home = () => {
     return (
-        <div>
-            <Typography sx={{ color: "#373737" }}>سلام درود</Typography>
-        </div>
+        <>
+            <Helmet>
+                <title>فروشگاه استیکر برنامه نویسی</title>
+            </Helmet>
+            <Header/>
+        </>
     )
 }
 

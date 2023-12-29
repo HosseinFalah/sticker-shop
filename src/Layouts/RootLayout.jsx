@@ -1,11 +1,13 @@
+import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
+import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, ThemeProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import rtlPlugin from 'stylis-plugin-rtl';
 import { prefixer } from 'stylis';
-import CssBaseline from '@mui/material/CssBaseline';
 
 import { theme } from "../Theme/theme";
+import { Navbar } from "../Components";
 
 // Create rtl cache
 const cacheRtl = createCache({
@@ -17,10 +19,12 @@ const RootLayout = () => {
     return (
         <CacheProvider value={cacheRtl}>
             <ThemeProvider theme={theme}>
+                <Toaster position="top-center" toastOptions={{ duration: 4000 }}/>
                 <CssBaseline />
-                <div>
+                <Navbar/>
+                <main>
                     <Outlet/>
-                </div>
+                </main>
             </ThemeProvider>
         </CacheProvider>
     )
