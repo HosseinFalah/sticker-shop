@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../Layouts/RootLayout";
-import { Home, NotFound } from "../Pages";
+import { CartTable, Home, NotFound, ProductDetails } from "../Pages";
 
 const router = createBrowserRouter([
     { 
@@ -8,7 +8,9 @@ const router = createBrowserRouter([
         element: <RootLayout/>, 
         errorElement: <NotFound/>,
         children: [
-            {path: '/', element: <Home/>}
+            {path: '/', element: <Home/>},
+            {path: '/cart', element: <CartTable/>},
+            {path: '/product/:productId', element: <ProductDetails/>}
         ]
     }
 ])

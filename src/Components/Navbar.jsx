@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+import { useSelector } from "react-redux";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -6,8 +8,9 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 
-
 const Navbar = () => {
+    const { cartItems } = useSelector(state => state.cart);
+    
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -21,33 +24,39 @@ const Navbar = () => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        فروشگاه استیکر
+                    <Typography variant="h6" component="p" sx={{ flexGrow: 1 }}>
+                        <Link to={`/`} className='header--link'>
+                            فروشگاه استیکر
+                        </Link>
                     </Typography>
-                    <IconButton 
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ position: "relative" }}
-                    >
-                        <Box 
-                            sx={{ 
-                                position: "absolute", 
-                                top: '-3px', 
-                                left: '-3px', 
-                                background: "#ef971d", 
-                                display: "flex", 
-                                alignItems: 'center', 
-                                justifyContent: 'center',
-                                width: '1.5rem',
-                                height: '1.5rem',
-                                borderRadius: '1rem'
-                            }}>
-                            <Typography variant="body1" component={"span"}>0</Typography>
-                        </Box>
-                        <ShoppingCartIcon/>
-                    </IconButton>
+                    <Link to={`/cart`} className='header--link'>
+                        <IconButton 
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{ position: "relative" }}
+                        >
+                            {cartItems.length === 0 ? null : (
+                                <Box 
+                                    sx={{ 
+                                        position: "absolute", 
+                                        top: '-3px', 
+                                        left: '-3px', 
+                                        background: "#ef971d", 
+                                        display: "flex", 
+                                        alignItems: 'center', 
+                                        justifyContent: 'center',
+                                        width: '1.5rem',
+                                        height: '1.5rem',
+                                        borderRadius: '1rem'
+                                    }}>
+                                    <Typography variant="body1" component={"span"}>{cartItems.length}</Typography>
+                                </Box>
+                            )}
+                            <ShoppingCartIcon/>
+                        </IconButton>
+                    </Link>
                 </Toolbar>
             </AppBar>
         </Box>
