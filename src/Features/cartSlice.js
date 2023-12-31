@@ -17,7 +17,7 @@ const cartSlice = createSlice({
             if (existingIndex >= 0) {
                 state.cartItems[existingIndex] = {
                     ...state.cartItems[existingIndex],
-                    cartQty: state.cartItems[existingIndex].cartQty++
+                    cartQty: state.cartItems[existingIndex].cartQty + 1
                 };
 
                 toast.success("تعداد افزایش یافت");
@@ -48,14 +48,47 @@ const cartSlice = createSlice({
                 qty: 0
             })
 
-            total = parseFloat(total.toFixed(2));
+            total = parseFloat(total.toFixed());
 
             state.cartTotalQty = qty;
             state.cartTotalAmount = total;
+        },
+        decreaseCart: (state, action) => {
+            const itemIndex = state.cartItems.findIndex(item => item.id === action.payload.id);
+
+            if (state.cartItems[itemIndex].cartQty > 1) {
+                state.cartItems[itemIndex].cartQty -= 1;
+
+                toast.success('تعداد کاهش یافت');
+            } else if (state.cartItems[itemIndex].cartQty === 1) {
+                const nextCartItems = state.cartItems.filter(item => item.id !== action.payload.id);
+
+                state.cartItems = nextCartItems;
+
+                toast.error('محصول از سبد خرید حذف شد');
+            };
+
+            localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+
+        },
+        removeCart: (state, action) => {
+            state.cartItems.map(cartItem => {
+                if (cartItem.id === action.payload.id) {
+                    const nextCartItems = state.cartItems.filter(item => item.id !== cartItem.id);
+                    
+                    state.cartItems = nextCartItems;
+
+                    toast.error('محصول از سبد خرید حذف شد');
+                }
+
+                localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+
+                return state;
+            })
         }
     }
 })
 
-export const { addToCart, getTotals } = cartSlice.actions;
+export const { addToCart, decreaseCart, removeCart, getTotals } = cartSlice.actions;
 
 export default cartSlice.reducer;

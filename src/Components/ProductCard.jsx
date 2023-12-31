@@ -2,8 +2,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 
-
-
 const ProductCard = ({ id, title, description, sticker, price }) => {
     return (
         <Box sx={{ boxShadow: '0px 1px 7px 1px #e6840b' }}>

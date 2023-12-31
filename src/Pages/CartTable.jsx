@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, getTotals } from "../Features/cartSlice";
+import { addToCart, decreaseCart, getTotals, removeCart } from "../Features/cartSlice";
 
 import Container from '@mui/material/Container'
 import Table from '@mui/material/Table';
@@ -11,10 +11,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Typography from '@mui/material/Typography'
+import Typography from '@mui/material/Typography';
+import Button from "@mui/material/Button";
+
+import QtyButton from "../Common/QtyButton";
 
 const CartTable = () => {
     const dispatch = useDispatch();
@@ -26,7 +28,16 @@ const CartTable = () => {
     }, [cart, dispatch]);
 
     const handleAddToCart = product => {
+        console.log(product);
         dispatch(addToCart(product));
+    }
+
+    const handleDecreaseCart = product => {
+        dispatch(decreaseCart(product));
+    }
+
+    const handleRemoveCart = product => {
+        dispatch(removeCart(product));
     }
 
     return (
@@ -59,14 +70,21 @@ const CartTable = () => {
                                     {item.title}
                                 </TableCell>
                                 <TableCell>
-                                    {item.cartQty}
+                                    <QtyButton 
+                                        decrementQty={() => handleDecreaseCart(item)} 
+                                        incrementQty={() => handleAddToCart(item)} 
+                                        qty={item.cartQty}
+                                    />
                                 </TableCell>
                                 <TableCell>
-                                    {item.price.toLocaleString()} تومان
+                                    {item.price * item.cartQty} تومان
                                 </TableCell>
                                 <TableCell>
-                                    <Button variant="outlined" color="error">
-                                        <DeleteIcon/>
+                                    <Button 
+                                        variant="outlined" 
+                                        color="error" 
+                                        onClick={() => handleRemoveCart(item)}>
+                                            <DeleteIcon/>
                                     </Button>
                                 </TableCell>
                             </TableRow>
