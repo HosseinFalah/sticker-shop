@@ -3,9 +3,14 @@ import { useSelector } from "react-redux";
 import Container from '@mui/material/Container'
 import PaginateItems from "../Common/PaginateItems";
 import { Header } from "../Components";
+import { useGetProductsQuery } from "../Api/productApi";
 
 const Home = () => {
-    const { items: products, status } = useSelector(state => state.products);
+    const { 
+        data: products = [],
+        isLoading,
+        isSuccess,
+    } = useGetProductsQuery();
 
     return (
         <Container maxWidth="lg">
@@ -16,7 +21,8 @@ const Home = () => {
             <PaginateItems 
                 products={products} 
                 productsPerPage={6} 
-                status={status} />
+                isLoading={isLoading}
+                isSuccess={isSuccess} />
         </Container>
     )
 }

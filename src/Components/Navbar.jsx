@@ -7,9 +7,10 @@ import Typography from '@mui/material/Typography';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { selectAll } from '../Features/cartSlice';
 
 const Navbar = () => {
-    const { cartItems } = useSelector(state => state.cart);
+    const cart = useSelector(selectAll);
     
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -37,7 +38,7 @@ const Navbar = () => {
                             aria-label="menu"
                             sx={{ position: "relative" }}
                         >
-                            {cartItems.length === 0 ? null : (
+                            {cart.length === 0 ? null : (
                                 <Box 
                                     sx={{ 
                                         position: "absolute", 
@@ -51,7 +52,7 @@ const Navbar = () => {
                                         height: '1.5rem',
                                         borderRadius: '1rem'
                                     }}>
-                                    <Typography variant="body1" component={"span"}>{cartItems.length}</Typography>
+                                    <Typography variant="body1" component={"span"}>{cart.length}</Typography>
                                 </Box>
                             )}
                             <ShoppingCartIcon/>

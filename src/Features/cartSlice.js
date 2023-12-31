@@ -1,45 +1,45 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
-const initialState = {
-    cartItems: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [],
-    cartTotalQty: 0,
-    cartTotalAmount: 0
-}
+const cartAdapter = createEntityAdapter();
+
+const initialState = cartAdapter.getInitialState({
+    cartTotalAmount: 0,
+    cartTotalQty: 0
+});
 
 const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
+        populateCart: (state, action) => {
+            if (localStorage.getItem('cartItems')) {
+                cartAdapter.setAll(state, JSON.parse(localStorage.getItem('cartItems')))
+            }
+        },
         addToCart: (state, action) => {
-            const existingIndex = state.cartItems.findIndex(item => item.id === action.payload.id);
+            // find Product in Store
+            const productExist = state.entities[action.payload.id];
 
-            if (existingIndex >= 0) {
-                state.cartItems[existingIndex] = {
-                    ...state.cartItems[existingIndex],
-                    cartQty: state.cartItems[existingIndex].cartQty + 1
-                };
+            if (productExist) {
+                state.entities[action.payload.id].cartQty += 1;
 
                 toast.success("تعداد افزایش یافت");
             } else {
-                const tempProductItem = {
-                    ...action.payload,
-                    cartQty: action.payload.cartQty
-                }
-
-                state.cartItems.push(tempProductItem);
+                cartAdapter.addOne(state, action.payload);
+                
                 toast.success("محصول به سبد خرید اضافه شد");
             }
 
-            localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
+            localStorage.setItem("cartItems", JSON.stringify(state.entities))
         },
         getTotals: (state, action) => {
-            let { total, qty } = state.cartItems.reduce((cartTotal, cartItem) => {
+            let { total, qty } = Object.values(state.entities).reduce((cartTotal, cartItem) => {
                 const { price, cartQty } = cartItem;
                 const itemTotal = price * cartQty;
 
                 cartTotal.total += itemTotal;
-                cartItem.qty += cartQty;
+                cartTotal.qty += cartQty;
                 
                 return cartTotal;
             },
@@ -48,47 +48,38 @@ const cartSlice = createSlice({
                 qty: 0
             })
 
-            total = parseFloat(total.toFixed());
-
             state.cartTotalQty = qty;
             state.cartTotalAmount = total;
         },
         decreaseCart: (state, action) => {
-            const itemIndex = state.cartItems.findIndex(item => item.id === action.payload.id);
+            const product = state.entities[action.payload.id];
 
-            if (state.cartItems[itemIndex].cartQty > 1) {
-                state.cartItems[itemIndex].cartQty -= 1;
+            if (product.cartQty > 1) {
+                product.cartQty -= 1;
 
                 toast.success('تعداد کاهش یافت');
-            } else if (state.cartItems[itemIndex].cartQty === 1) {
-                const nextCartItems = state.cartItems.filter(item => item.id !== action.payload.id);
-
-                state.cartItems = nextCartItems;
+            } else if (product.cartQty === 1) {
+                cartAdapter.removeOne(state, action.payload.id);
 
                 toast.error('محصول از سبد خرید حذف شد');
             };
 
-            localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+            localStorage.setItem('cartItems', JSON.stringify(state.entities));
 
         },
         removeCart: (state, action) => {
-            state.cartItems.map(cartItem => {
-                if (cartItem.id === action.payload.id) {
-                    const nextCartItems = state.cartItems.filter(item => item.id !== cartItem.id);
-                    
-                    state.cartItems = nextCartItems;
+            cartAdapter.removeOne(state, action.payload.id);
 
-                    toast.error('محصول از سبد خرید حذف شد');
-                }
+            toast.error('محصول از سبد خرید حذف شد');
 
-                localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
-
-                return state;
-            })
+            localStorage.setItem('cartItems', JSON.stringify(state.entities));
+            
         }
     }
 })
 
-export const { addToCart, decreaseCart, removeCart, getTotals } = cartSlice.actions;
+export const { selectAll } = cartAdapter.getSelectors(state => state.cart);
+
+export const { populateCart, addToCart, decreaseCart, removeCart, getTotals } = cartSlice.actions;
 
 export default cartSlice.reducer;

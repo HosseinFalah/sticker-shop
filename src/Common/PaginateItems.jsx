@@ -2,7 +2,7 @@ import { useState } from "react";
 import Pagination from '@mui/material/Pagination';
 import { Products } from "../Components";
 
-const PaginateItems = ({ productsPerPage, products, status }) => {
+const PaginateItems = ({ productsPerPage, products, isLoading, isSuccess }) => {
     const [startIndex, setStartIndex ] = useState(0);
 
     // productsPerPage count product in page
@@ -19,11 +19,18 @@ const PaginateItems = ({ productsPerPage, products, status }) => {
         // count productsPerPage example 6 in page * select button example 2 
         const newIndex = btnSelected * productsPerPage;
         setStartIndex(newIndex);
+
+        // scroll Top
+        document.documentElement.scrollTop = 0;
     }
 
     return (
         <>
-            <Products currentProducts={currentProducts} status={status}/>
+            <Products 
+                currentProducts={currentProducts} 
+                isLoading={isLoading} 
+                isSuccess={isSuccess} 
+            />
             <Pagination 
                 sx={{ margin: '3rem 0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 count={pageCount} 

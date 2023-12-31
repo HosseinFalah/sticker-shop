@@ -4,15 +4,15 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import ProductCard from "./ProductCard";
 
-const Products = ({ currentProducts, status }) => {
+const Products = ({ currentProducts, isLoading, isSuccess }) => {
     return (
         <Box sx={{ flexGrow: 1 }}>
-            {status === "pending" && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 'calc(100vh - 14rem)' }}>
+            {isLoading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 'calc(100vh - 14rem)' }}>
                 <CircularProgress color="success"/>
             </Box>}
             <Box sx={{ mt: 5 }}>
                 <Grid container spacing={2}>
-                    {status === "success" && currentProducts?.map(product => (
+                    {isSuccess && currentProducts?.map(product => (
                         <Grid key={product.id} xs={4}>
                             <ProductCard {...product}/>
                         </Grid>

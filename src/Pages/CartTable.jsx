@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, decreaseCart, getTotals, removeCart } from "../Features/cartSlice";
+import { addToCart, decreaseCart, getTotals, removeCart, selectAll } from "../Features/cartSlice";
 
 import Container from '@mui/material/Container'
 import Table from '@mui/material/Table';
@@ -21,7 +21,8 @@ import QtyButton from "../Common/QtyButton";
 const CartTable = () => {
     const dispatch = useDispatch();
 
-    const cart = useSelector(state => state.cart);
+    const cart = useSelector(selectAll);
+    const { cartTotalAmount } = useSelector(state => state.cart);
     
     useEffect(() => {
         dispatch(getTotals());
@@ -53,7 +54,7 @@ const CartTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {cart.cartItems.length ? cart.cartItems.map(item => (
+                        {cart.length ? cart.map(item => (
                             <TableRow
                                 key={item.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -77,7 +78,7 @@ const CartTable = () => {
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    {item.price * item.cartQty} تومان
+                                    {(item.price * item.cartQty).toLocaleString()} تومان
                                 </TableCell>
                                 <TableCell>
                                     <Button 
@@ -98,8 +99,8 @@ const CartTable = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {cart.cartTotalAmount === 0 ? null : (
-                <Typography sx={{ textAlign: 'center', mt: 4}}>قیمت کل: {cart.cartTotalAmount.toLocaleString()} تومان</Typography>
+            {cartTotalAmount === 0 ? null : (
+                <Typography sx={{ textAlign: 'center', mt: 4}}>قیمت کل: {cartTotalAmount.toLocaleString()} تومان</Typography>
             )}
             <Box sx={{ display: 'grid', maxWidth: '500px', margin: 'auto', mt: 4, gap: 2 }}>
                 <Button variant="outlined" color="success">

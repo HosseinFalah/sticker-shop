@@ -1,5 +1,4 @@
 import { Helmet } from "react-helmet";
-import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -9,17 +8,18 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 
 import ProductForm from "../Components/ProductForm";
+import { useGetProductQuery } from "../Api/productApi";
 
 const ProductDetails = () => {
     const navigate = useNavigate();
     const { productId } = useParams()
 
-    const product = useSelector(state => state.products.items.find(product => product.id === productId));
+    const { data: product, isSuccess } = useGetProductQuery(productId);
 
     return (
         <Container maxWidth="lg">
             <Box sx={{ mt: 4 }}>
-                {product && (
+                {isSuccess && (
                     <>
                         <Helmet>
                             <title>{product.title}</title>
